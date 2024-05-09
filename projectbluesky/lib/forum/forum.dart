@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class forum extends StatefulWidget {
-  const forum({super.key});
+class Forum extends StatefulWidget {
+  const Forum({super.key});
 
   @override
-  State<forum> createState() => _forumState();
+  State<Forum> createState() => _ForumState();
 }
 
-class _forumState extends State<forum> {
+class _ForumState extends State<Forum> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Text("Forum"));
+    return const SafeArea(child: Text("Forum"));
   }
 }

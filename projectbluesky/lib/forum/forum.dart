@@ -21,7 +21,7 @@ class _ForumState extends State<Forum> {
           future: getFromFireStore(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasData) {
               // Extract challenges and their users from snapshot data
@@ -39,7 +39,7 @@ class _ForumState extends State<Forum> {
                         Text('Title: ${challenges[index].title}'),
                         Text('Description: ${challenges[index].description}'),
                         // Add more fields from DailyChallenge as needed
-                        SizedBox(
+                        const SizedBox(
                             height: 8), // Add some space between text and image
                         if (challenges[index].picture != null)
                           Image.network(
@@ -58,7 +58,7 @@ class _ForumState extends State<Forum> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              return Text('No data available');
+              return const Text('No data available');
             }
           },
         ),

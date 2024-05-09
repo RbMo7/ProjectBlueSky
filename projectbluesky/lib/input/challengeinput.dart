@@ -19,16 +19,15 @@ class _ChallengeInputState extends State<ChallengeInput> {
   final _titleController = TextEditingController();
   final _desController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
-  XFile? _image; 
-  String imageUrl = "" ; 
+  XFile? _image;
+  String imageUrl = "";
 
-Firebase _firebase = Firebase();
+  final Firebase _firebase = Firebase();
 
-  
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(),
+      decoration: const BoxDecoration(),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -37,7 +36,7 @@ Firebase _firebase = Firebase();
           children: [
             Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 5.0),
+                padding: const EdgeInsets.only(top: 5.0),
                 child: Text(
                   "WHAT DID YOU DO FOR A",
                   style: GoogleFonts.poppins(
@@ -59,7 +58,7 @@ Firebase _firebase = Firebase();
               child: TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   hintText: "What did you contribute?",
                   suffixIcon: IconButton(
                     onPressed: () {
@@ -74,7 +73,7 @@ Firebase _firebase = Firebase();
               controller: _desController,
               maxLines: 5,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 hintText: "Tell us a little more in detail",
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -94,54 +93,61 @@ Firebase _firebase = Firebase();
             _buildImagePreview(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: ElevatedButton(onPressed: () async {
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (_image == null) return;
+                  //getting reference to storage root
+                  Reference referenceRoot =
+                      FirebaseStorage.instance.ref();
+                  Reference referenceDirImages =
+                      referenceRoot.child('images');
 
+                  //reference for the images to be stored
+                  String uniqueFileName =
+                      DateTime.now().millisecondsSinceEpoch.toString();
+                  Reference referenceImageToUpload =
+                      referenceDirImages.child(uniqueFileName);
 
-                        if (_image == null) return;
-                        //getting reference to storage root
-                        Reference referenceRoot =
-                            FirebaseStorage.instance.ref();
-                        Reference referenceDirImages =
-                            referenceRoot.child('images');
+                  //Store the file
+                  try {
+                    await referenceImageToUpload
+                        .putFile(File(_image!.path));
 
-                            
-                        //reference for the images to be stored
-                        String uniqueFileName =
-                            DateTime.now().millisecondsSinceEpoch.toString();
-                        Reference referenceImageToUpload =
-                            referenceDirImages.child(uniqueFileName);
+                    //get the url of the image
+                    imageUrl =
+                        await referenceImageToUpload.getDownloadURL();
 
-                        //Store the file
-                        try {
-                          await referenceImageToUpload
-                              .putFile(File(_image!.path));
+                    String? uid = await _firebase.getCurrentUser();
 
-                          //get the url of the image
-                          imageUrl =
-                              await referenceImageToUpload.getDownloadURL();
-                        } catch (error) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Failed to Upload Image :$error"),
-                            ),
-                          );
-                        }
+                    DailyChallenge _challenge = DailyChallenge(
+                      title: _titleController.text,
+                      description: _desController.text,
+                      picture: imageUrl,
+                      userID: uid!,
+                      challengeDate: DateTime.now(),
+                    );
 
-      
-      String? uid = await _firebase.getCurrentUser(); 
+                    await addToFirestore(_challenge);
 
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Successfully uploaded"),
+                        duration: Duration(seconds: 3),
+                      ),
+                      
+                    );
 
-              DailyChallenge _challenge = new DailyChallenge(
-                title: _titleController.text,
-                description: _desController.text,
-                picture: imageUrl,
-                userID: uid!, 
-                challengeDate: DateTime.now(), 
-              ); 
-
- await  addToFirestore(_challenge); 
-
-              }, child: (Text("Submit"))),
+                    Navigator.pop(context); // Close the modal after successful submission
+                  } catch (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Failed to Upload Image :$error"),
+                      ),
+                    );
+                  }
+                },
+                child: const Text("Submit"),
+              ),
             )
           ],
         ),
@@ -151,9 +157,9 @@ Firebase _firebase = Firebase();
 
   void selectImages() async {
     final XFile? selectedImages =
-        await _imagePicker.pickImage(source:ImageSource.camera);
+        await _imagePicker.pickImage(source: ImageSource.camera);
 
-    if (selectedImages != null ) {
+    if (selectedImages != null) {
       setState(() {
         _image = selectedImages;
       });
@@ -161,16 +167,14 @@ Firebase _firebase = Firebase();
   }
 
   Widget _buildImagePreview() {
-    return _image == null 
+    return _image == null
         ? Container()
         : Column(
             children: [
-               Image.file(
-                    File(_image!.path),
-                    fit: BoxFit.cover,
-                  )
-                
-              
+              Image.file(
+                File(_image!.path),
+                fit: BoxFit.cover,
+              )
             ],
           );
   }

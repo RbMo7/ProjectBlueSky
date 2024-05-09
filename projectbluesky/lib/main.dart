@@ -41,6 +41,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  
+
   final List<Widget> _pages = [Challenges(), Home(), Forum()];
 
   @override

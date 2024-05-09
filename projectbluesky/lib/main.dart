@@ -62,8 +62,10 @@ class _MyAppState extends State<MyApp> {
               centerTitle: true,
               flexibleSpace: Container(
                 decoration: const BoxDecoration(
-                    gradient: RadialGradient(
-                        radius: 10, colors: [Colors.white, Colors.blue])),
+                    gradient: RadialGradient(radius: 10, colors: [
+                  Colors.white,
+                  Color.fromRGBO(0, 156, 255, 1)
+                ])),
               ),
             ),
             body: _pages[_selectedIndex],

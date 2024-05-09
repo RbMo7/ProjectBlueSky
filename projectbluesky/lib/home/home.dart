@@ -1,6 +1,12 @@
+import 'dart:convert';
+import 'dart:ffi';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // for sample data loading
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,9 +16,43 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // Sample data for air quality forecast
-  List<int> airQualityForecast = [100, 60, 70, 65, 55, 45, 40];
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
   var now = DateTime.now();
+  List<dynamic> aqi = [];
+
+  // Fetch data from a real API (replace with your actual API endpoint)
+  final String apiUrl = 'http://10.0.2.2:8000/api';
+
+  Future<dynamic> fetchData() async {
+    print("Helloooooooo");
+    try {
+      final uri = Uri.parse(apiUrl);
+      final response = await http.get(uri);
+      final body = response.body;
+      final gg = body[1];
+      print(gg);
+
+      final json = jsonDecode(body);
+      print("heyyyyyy");
+
+      // Extract AQI value from the JSON response structure (modify based on your API)
+      final aqiValue = json['yhat'];
+      setState(() {
+        aqi = [aqiValue];
+      });
+      print(aqi);
+      print(aqi.length);
+      return aqiValue;
+    } catch (error) {
+      print('Error fetching data: $error');
+      return null; // Handle API errors gracefully (display error message)
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +61,7 @@ class _HomeState extends State<Home> {
         title: Text(
           'Air Quality Index',
           style:
-              GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.w600),
+              GoogleFonts.montserrat(fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
       body: SafeArea(
@@ -31,49 +71,80 @@ class _HomeState extends State<Home> {
             // Display numeric value of air quality for today
             Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 15.0),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: _buildAirQualityWidget(airQualityForecast[0])),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Column(
-                    children: [
-                      Text(airQualityForecast[0].toString(),
-                          style: GoogleFonts.poppins(
-                              fontSize: 60,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white)),
-                      Text("last updated on 9th May, 2024",
-                          style: GoogleFonts.montserrat(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white)),
-                    ],
-                  ),
-                ),
+              child: FutureBuilder(
+                future: fetchData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      child: Text("Loading"),
+                    );
+                  } else if (!snapshot.hasData || aqi.isEmpty) {
+                    return const Text('Error fetching data. Please try again.');
+                  } else {
+                    return Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: _buildAirQualityWidget(1)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              aqi[0].toString(),
+                              style: GoogleFonts.poppins(
+                                fontSize: 60,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              "last updated on ${DateTime.now().toString()}",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: _buildAirQualityWidget(airQualityForecast[0])),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(_levelofAirQuality(airQualityForecast[0]),
-                        style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white)),
-                  ),
-                ),
-              ),
-            ),
+            FutureBuilder(
+                future: fetchData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: _buildAirQualityWidget(1),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              _levelofAirQuality(2),
+                              style: GoogleFonts.montserrat(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
             const SizedBox(height: 20),
             const Text(
               'Weekly Forecast',
@@ -105,8 +176,7 @@ class _HomeState extends State<Home> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: _buildDailyForecastWidget(
-                              airQualityForecast[index]),
+                          child: _buildDailyForecastWidget(1),
                         ),
                       ],
                     ),
@@ -139,7 +209,7 @@ class _HomeState extends State<Home> {
     return color;
   }
 
-  String _levelofAirQuality<Widget>(int aqi) {
+  String _levelofAirQuality(int aqi) {
     String level;
 
     if (aqi <= 50) {
@@ -160,17 +230,17 @@ class _HomeState extends State<Home> {
     return level;
   }
 
-  Widget _buildDailyForecastWidget(int airQualityIndex) {
+  Widget _buildDailyForecastWidget(int data) {
     return Container(
       width: 60,
       height: 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: _buildAirQualityWidget(airQualityIndex),
+        color: _buildAirQualityWidget(data),
       ),
       child: Center(
         child: Text(
-          '$airQualityIndex',
+          '$data',
           style: const TextStyle(
               fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white),
         ),

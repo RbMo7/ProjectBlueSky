@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projectbluesky/modal/dailyChallenge.dart';
 
 Future<void> addToFirestore(DailyChallenge challenge) async {
@@ -42,7 +42,7 @@ Future<Map<String, DailyChallenge>> getFromFireStore() async {
         description: challengeDoc['description'],
         picture: challengeDoc['picture'],
         userID: challengeDoc['userID'],
-        challengeDate: DateTime.parse(challengeDoc['challengeDate']),
+        challengeDate: challengeDoc['challengeDate'],
       );
 
       // Add entry to challenge map with user name as key and challenge object as value

@@ -16,6 +16,7 @@ class _ChallengesState extends State<Challenges> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(child: Text("You have contributed % for Blue Sky!"),),
           PlaceHolder_Challenges(
               challengeName: "Daily Challenges",
               challengeContent: "lorem eplisum"),

@@ -25,8 +25,6 @@ class _MyAppState extends State<MyApp> {
   int _selectedIndex = 1;
 
   void _navigateBottomBar(int index) {
-    print(index);
-    print(_selectedIndex);
     setState(() {
       _selectedIndex = index;
     });
@@ -37,11 +35,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
+        title: 'Project Blue Sky',
+        theme: ThemeData(
+            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
         home: Scaffold(
             appBar: AppBar(
               title: Text(
-                "P R O J E C T  B L U E  S K Y",
-                style: GoogleFonts.roboto(
+                "PROJECT BLUE SKY",
+                style: GoogleFonts.poppins(
                     fontSize: 25,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade600),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,6 +32,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+        title: 'Project Blue Sky',
+        theme: ThemeData(
+            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
+        home: AuthOrHomePage());
+  }
+}
+
+class AuthOrHomePage extends StatefulWidget {
+  @override
+  State<AuthOrHomePage> createState() => _AuthOrHomePageState();
+}
+
+class _AuthOrHomePageState extends State<AuthOrHomePage> {
   int _selectedIndex = 1;
 
   void _navigateBottomBar(int index) {
@@ -40,14 +59,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   final List<Widget> _pages = [Challenges(), Home(), Forum()];
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-        title: 'Project Blue Sky',
-        theme: ThemeData(
-            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
-        home: Scaffold(
+    return Scaffold(
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return Scaffold(
             appBar: AppBar(
               title: Text(
                 "PROJECT BLUE SKY",
@@ -76,6 +96,13 @@ class _MyAppState extends State<MyApp> {
                 BottomNavigationBarItem(
                     icon: Icon(Iconsax.support), label: 'Forum')
               ],
-            )));
+            ));
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return AuthGate();
+        },
+      ),
+    );
   }
 }

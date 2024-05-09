@@ -8,6 +8,7 @@ import 'package:projectbluesky/firebase_options.dart';
 import 'package:projectbluesky/forum/forum.dart';
 import 'package:projectbluesky/home/home.dart';
 import 'package:projectbluesky/signIn/auth_gate.dart';
+import 'package:projectbluesky/signIn/signin.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +16,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MaterialApp(initialRoute: '/signIn', routes: {
+  runApp(MaterialApp(initialRoute: '/', routes: {
     '/': (context) => const MyApp(),
     '/home': (context) => const Home(),
     '/challenges': (context) => const Challenges(),
@@ -32,24 +33,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-        title: 'Project Blue Sky',
-        theme: ThemeData(
-            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
-        home: AuthOrHomePage());
-  }
-}
-
-class AuthOrHomePage extends StatefulWidget {
-  @override
-  State<AuthOrHomePage> createState() => _AuthOrHomePageState();
-}
-
-class _AuthOrHomePageState extends State<AuthOrHomePage> {
   int _selectedIndex = 1;
 
   void _navigateBottomBar(int index) {
@@ -62,12 +45,12 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, AsyncSnapshot<User?> snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
-            return Scaffold(
+    // TODO: implement build
+    return MaterialApp(
+        title: 'Project Blue Sky',
+        theme: ThemeData(
+            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
+        home: Scaffold(
             appBar: AppBar(
               title: Text(
                 "PROJECT BLUE SKY",
@@ -96,13 +79,6 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
                 BottomNavigationBarItem(
                     icon: Icon(Iconsax.support), label: 'Forum')
               ],
-            ));
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return AuthGate();
-        },
-      ),
-    );
+            )));
   }
 }

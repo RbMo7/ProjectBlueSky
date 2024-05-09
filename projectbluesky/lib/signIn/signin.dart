@@ -8,14 +8,14 @@ class SignIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => StreamBuilder<User?>(
-    stream: FirebaseAuth.instance.authStateChanges() ,
-    builder: (context, snapshot){
-      if(snapshot.hasData){
-        return MyApp();
-      }
-      
-    return const SignInScreen(
-        providerConfigs: [EmailProviderConfiguration()],
-      );
-  });
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return MyApp();
+        }
+
+        return const SignInScreen(
+          providerConfigs: [EmailProviderConfiguration()],
+        );
+      });
 }

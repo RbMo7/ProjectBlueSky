@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blueSky/', include('airQuality.urls')),
     path('api/',model_pred),
+    path('fire/',fire_location),
     path('api-auth/', include('rest_framework.urls')),
+    path('updateFire/',updateFire),
 ]

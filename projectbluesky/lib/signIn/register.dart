@@ -2,32 +2,39 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:projectbluesky/main.dart';
+import 'package:projectbluesky/signIn/auth_gate.dart';
 import 'package:projectbluesky/signIn/firebaseSignin.dart';
-import 'package:projectbluesky/signIn/register.dart';
 
-class AuthGate extends StatefulWidget {
-  AuthGate({super.key});
+class Register extends StatefulWidget {
+  Register({super.key});
 
   @override
-  State<AuthGate> createState() => _AuthGateState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _AuthGateState extends State<AuthGate> {
+class _RegisterState extends State<Register> {
   TextEditingController _emailController = TextEditingController();
 
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+
   final Firebase _firebase = Firebase();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Center(
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                ),
+              ),
               TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -41,21 +48,21 @@ class _AuthGateState extends State<AuthGate> {
                   labelText: 'Password',
                 ),
               ),
+              
               Row(
                 children: [
                   ElevatedButton(onPressed: () {
-                    _firebase.login(_emailController.text.trim(), _passwordController.text.trim());
+                    _firebase.register(_emailController.text.trim(), _passwordController.text.trim(), _nameController.text.trim());
                     Navigator.pushNamed(context, '/');
-                  }, child: Text('Login')),
-                  
-                  Text('Not registered?'),
+                  }, child: Text('Register')),
+                   Text('Already logged in?'),
                   SizedBox(
                     width: 10,
                   ),
                   InkWell(
-                    child: Text('Register'),
+                    child: Text('Login'),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Register()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AuthGate()));
                     },),
                 ],
               )

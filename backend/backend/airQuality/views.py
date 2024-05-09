@@ -25,12 +25,10 @@ def model_pred(request):
         "ds": list(json_send['ds'].values()),
         "yhat": list(json_send['yhat'].values())
     }
-    print(simplified_json)
-    print(json_send)
     return JsonResponse(simplified_json)
 
 def getLocation():
-    geo = pd.read_csv('D:\\Ecothon\\GitProject\\ProjectBlueSky\\backend\\MODIS_C6_1_South_Asia_24h.csv')
+    geo = pd.read_csv('..\\MODIS_C6_1_South_Asia_24h.csv')
     geo = geo.drop(geo[geo.latitude >= 30].index)
     geo = geo.drop(geo[geo.latitude <= 26].index)
     geo = geo.drop(geo[geo.longitude <= 80].index)
@@ -72,15 +70,27 @@ def jsonProcessor():
                             'county': properties.get('county', 'N/A'),
                             'city': properties.get('city', 'N/A'),
                         })
-    print(extracted_data)
     return extracted_data
 
 def fire_location(request):
     extracted_data = jsonProcessor()
     return JsonResponse({'data':extracted_data})
 
-def updateFire():
+def updateFire(request):
     url='https://firms.modaps.eosdis.nasa.gov/data/active_fire/modis-c6.1/csv/MODIS_C6_1_SouthEast_Asia_24h.csv'
-    urllib.request.urlretrieve(url, "D:\\Ecothon\\GitProject\\ProjectBlueSky\\backend\\MODIS_C6_1_South_Asia_24h.csv")
+    urllib.request.urlretrieve(url, "..\\MODIS_C6_1_South_Asia_24h.csv")
     print("Successful Download.")
     
+def updateModel(request):
+    data_Pulchowk = pd.read_csv('..\\Data\\pulchowk,-kathmandu-air-quality.csv')
+    data_Pulchowk['date'] =pd.to_datetime(data_Pulchowk['date'])
+    data_Pulchowk.pm25 = pd.to_numeric(data_Pulchowk.pm25, errors='coerce')
+    data_Pulchowk['pm25']=data_Pulchowk['pm25'].replace(to_replace=' ',value=np.nan)
+    model = Prophet()
+
+    train_data=pd.DataFrame()
+    train_data['ds']=data_Pulchowk['date']
+    train_data['y']=data_Pulchowk['pm25']
+    model.fit(train_data)
+    joblib.dump(model,'model')
+    return(HttpResponse('future'))

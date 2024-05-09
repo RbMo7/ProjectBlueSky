@@ -16,6 +16,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  
   runApp(MaterialApp(initialRoute: '/', routes: {
     '/': (context) => const MyApp(),
     '/home': (context) => const Home(),
@@ -45,12 +46,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-        title: 'Project Blue Sky',
-        theme: ThemeData(
-            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
-        home: Scaffold(
+    return Scaffold(
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, AsyncSnapshot<User?> snapshot) {
+         
+          if (snapshot.hasData && snapshot.data != null) {
+            
+            return Scaffold(
             appBar: AppBar(
               title: Text(
                 "PROJECT BLUE SKY",
@@ -81,6 +84,16 @@ class _MyAppState extends State<MyApp> {
                 BottomNavigationBarItem(
                     icon: Icon(Iconsax.support), label: 'Forum')
               ],
-            )));
+            ));
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
+          else{
+            return AuthGate();
+          }
+        },
+      ),
+    );
   }
 }

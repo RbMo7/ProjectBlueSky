@@ -8,7 +8,6 @@ import 'package:projectbluesky/firebase_options.dart';
 import 'package:projectbluesky/forum/forum.dart';
 import 'package:projectbluesky/home/home.dart';
 import 'package:projectbluesky/signIn/auth_gate.dart';
-import 'package:projectbluesky/signIn/signin.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,16 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:projectbluesky/challenges/challenges.dart';
+import 'package:projectbluesky/firebase_options.dart';
 import 'package:projectbluesky/forum/forum.dart';
 import 'package:projectbluesky/home/home.dart';
+import 'package:projectbluesky/signIn/auth_gate.dart';
 
-void main() {
-  runApp(MaterialApp(initialRoute: '/', routes: {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(MaterialApp(initialRoute: '/signIn', routes: {
     '/': (context) => const MyApp(),
     '/home': (context) => const Home(),
     '/challenges': (context) => const Challenges(),
-    '/forum': (context) => const Forum()
+    '/forum': (context) => const Forum(),
+    '/signIn': (context) => AuthGate()
   }));
 }
 

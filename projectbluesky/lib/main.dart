@@ -8,6 +8,7 @@ import 'package:projectbluesky/firebase_options.dart';
 import 'package:projectbluesky/forum/forum.dart';
 import 'package:projectbluesky/home/home.dart';
 import 'package:projectbluesky/signIn/auth_gate.dart';
+import 'package:projectbluesky/signIn/signin.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  
   runApp(MaterialApp(initialRoute: '/', routes: {
     '/': (context) => const MyApp(),
     '/home': (context) => const Home(),
@@ -32,24 +34,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-        title: 'Project Blue Sky',
-        theme: ThemeData(
-            textTheme: TextTheme(bodyMedium: GoogleFonts.montserrat())),
-        home: AuthOrHomePage());
-  }
-}
-
-class AuthOrHomePage extends StatefulWidget {
-  @override
-  State<AuthOrHomePage> createState() => _AuthOrHomePageState();
-}
-
-class _AuthOrHomePageState extends State<AuthOrHomePage> {
   int _selectedIndex = 1;
 
   void _navigateBottomBar(int index) {

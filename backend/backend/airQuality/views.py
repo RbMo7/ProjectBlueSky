@@ -21,8 +21,13 @@ def model_pred(request):
     forecast['ds']=forecast['ds'].astype(str)
     to_send = forecast.to_json()
     json_send = json.loads(to_send)
-    jsonProcessor()
-    return JsonResponse(json_send)
+    simplified_json = {
+        "ds": list(json_send['ds'].values()),
+        "yhat": list(json_send['yhat'].values())
+    }
+    print(simplified_json)
+    print(json_send)
+    return JsonResponse(simplified_json)
 
 def getLocation():
     geo = pd.read_csv('D:\\Ecothon\\GitProject\\ProjectBlueSky\\backend\\MODIS_C6_1_South_Asia_24h.csv')

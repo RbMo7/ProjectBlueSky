@@ -2,14 +2,14 @@ class DailyChallenge {
   final String userID;
   final String title;
   final String description;
-  final List<String> pictures;
+  final String picture;
   final DateTime challengeDate;
 
   DailyChallenge({
     required this.userID,
     required this.title,
     required this.description,
-    required this.pictures,
+    required this.picture,
     required this.challengeDate,
   });
 
@@ -19,7 +19,7 @@ class DailyChallenge {
       challengeDate: DateTime.parse(json['challengeDate']),
       description: json['description'],
       title: json['title'],
-      pictures: List<String>.from(json['pictures']),
+      picture:json['picture'],
     );
   }
 
@@ -29,7 +29,7 @@ class DailyChallenge {
       'challengeDate': challengeDate.toIso8601String(),
       'description': description,
       'title': title,
-      'pictures': pictures,
+      'picture': picture,
     };
   }
 }

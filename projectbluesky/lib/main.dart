@@ -15,7 +15,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MaterialApp(initialRoute: '/signIn', routes: {
+  runApp(MaterialApp(initialRoute: '/', routes: {
     '/': (context) => const MyApp(),
     '/home': (context) => const Home(),
     '/challenges': (context) => const Challenges(),
@@ -66,7 +66,9 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, AsyncSnapshot<User?> snapshot) {
+         
           if (snapshot.hasData && snapshot.data != null) {
+            
             return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -100,7 +102,10 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          return AuthGate();
+          
+          else{
+            return AuthGate();
+          }
         },
       ),
     );

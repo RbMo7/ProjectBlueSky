@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projectbluesky/modal/dailyChallenge.dart';
+import 'package:projectbluesky/services/challengeServices.dart';
+import 'package:projectbluesky/signIn/firebaseSignin.dart';
 
 class ChallengeInput extends StatefulWidget {
   const ChallengeInput({Key? key});
@@ -15,8 +19,12 @@ class _ChallengeInputState extends State<ChallengeInput> {
   final _titleController = TextEditingController();
   final _desController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
-  List<XFile> _imageFileList = [];
+  XFile? _image; 
+  String imageUrl = "" ; 
 
+Firebase _firebase = Firebase();
+
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -86,7 +94,54 @@ class _ChallengeInputState extends State<ChallengeInput> {
             _buildImagePreview(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: ElevatedButton(onPressed: () {}, child: (Text("Submit"))),
+              child: ElevatedButton(onPressed: () async {
+
+
+                        if (_image == null) return;
+                        //getting reference to storage root
+                        Reference referenceRoot =
+                            FirebaseStorage.instance.ref();
+                        Reference referenceDirImages =
+                            referenceRoot.child('images');
+
+                            
+                        //reference for the images to be stored
+                        String uniqueFileName =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                        Reference referenceImageToUpload =
+                            referenceDirImages.child(uniqueFileName);
+
+                        //Store the file
+                        try {
+                          await referenceImageToUpload
+                              .putFile(File(_image!.path));
+
+                          //get the url of the image
+                          imageUrl =
+                              await referenceImageToUpload.getDownloadURL();
+                        } catch (error) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Failed to Upload Image :$error"),
+                            ),
+                          );
+                        }
+
+      
+      String? uid = await _firebase.getCurrentUser(); 
+
+
+              DailyChallenge _challenge = new DailyChallenge(
+                title: _titleController.text,
+                description: _desController.text,
+                picture: imageUrl,
+                userID: uid!, 
+                challengeDate: DateTime.now(), 
+              ); 
+
+ await  addToFirestore(_challenge); 
+
+              }, child: (Text("Submit"))),
             )
           ],
         ),
@@ -95,34 +150,27 @@ class _ChallengeInputState extends State<ChallengeInput> {
   }
 
   void selectImages() async {
-    final List<XFile>? selectedImages =
-        await _imagePicker.pickMultiImage(imageQuality: 80);
+    final XFile? selectedImages =
+        await _imagePicker.pickImage(source:ImageSource.camera);
 
-    if (selectedImages != null && selectedImages.isNotEmpty) {
+    if (selectedImages != null ) {
       setState(() {
-        _imageFileList = selectedImages;
+        _image = selectedImages;
       });
     }
   }
 
   Widget _buildImagePreview() {
-    return _imageFileList.isEmpty
+    return _image == null 
         ? Container()
         : Column(
             children: [
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _imageFileList.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4, crossAxisSpacing: 10),
-                itemBuilder: (BuildContext context, int index) {
-                  return Image.file(
-                    File(_imageFileList[index].path),
+               Image.file(
+                    File(_image!.path),
                     fit: BoxFit.cover,
-                  );
-                },
-              ),
+                  )
+                
+              
             ],
           );
   }

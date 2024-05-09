@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projectbluesky/signIn/firebaseSignin.dart';
 
 class Forum extends StatefulWidget {
   const Forum({super.key});
@@ -8,8 +9,12 @@ class Forum extends StatefulWidget {
 }
 
 class _ForumState extends State<Forum> {
+  Firebase _firebase = new Firebase();
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(child: Text("Forum"));
+    return Scaffold(body:  SafeArea(child: ElevatedButton(onPressed: (){
+      _firebase.logout();
+      Navigator.pushNamed(context, '/');
+    }, child: Text('logout'))));
   }
 }

@@ -20,6 +20,7 @@ from airQuality.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('blueSky/', include('airQuality.urls')),
-    path('test/',model_pred)
+    path('blueSky/', include('airQuality.urls')),
+    path('aqi/',model_pred),
+    path('api-auth/', include('rest_framework.urls')),
 ]

@@ -42,7 +42,7 @@ Future<Map<String, DailyChallenge>> getFromFireStore() async {
         description: challengeDoc['description'],
         picture: challengeDoc['picture'],
         userID: challengeDoc['userID'],
-        challengeDate: challengeDoc['challengeDate'],
+        challengeDate: DateTime.parse(challengeDoc['challengeDate']),
       );
 
       // Add entry to challenge map with user name as key and challenge object as value

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:projectbluesky/services/challengeServices.dart';
 import 'package:projectbluesky/modal/dailyChallenge.dart';
 import 'package:projectbluesky/signIn/firebaseSignin.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Forum extends StatefulWidget {
   const Forum({Key? key});
@@ -18,60 +19,71 @@ class _ForumState extends State<Forum> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: FutureBuilder<Map<String, DailyChallenge>>(
-          future: getFromFireStore(),
+        child: FutureBuilder<List<DailyChallenge>>(
+          future: getSortedChallenges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasData) {
-              // Extract challenges and their users from snapshot data
-              final challenges = snapshot.data!.values.toList();
-              final users = snapshot.data!.keys.toList();
+              final challenges = snapshot.data!;
 
               return ListView.builder(
                 itemCount: challenges.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                      'User: ${users[index]}',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Color.fromRGBO(0, 156, 255, 0.7)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
+                  var challenge = challenges[index];
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FutureBuilder<String>(
+                        future: getUserName(challenge.userID),
+                        builder: (context, userSnapshot) {
+                          if (userSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SizedBox.shrink();
+                          }
+                          if (userSnapshot.hasData) {
+                            return Text(
+                              'User: ${userSnapshot.data}',
+                              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                            );
+                          } else if (userSnapshot.hasError) {
+                            return Text('Error: ${userSnapshot.error}');
+                          } else {
+                            return const Text('No data available');
+                          }
+                        },
+                      ),
+                      ListTile(
+                        title: Text(
+                          '${challenge.title}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${challenges[index].title}',
-                              style: GoogleFonts.poppins(
-                                  fontSize: 20, fontWeight: FontWeight.w500),
-                            ),
-                            Text('${challenges[index].description}',
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 15, fontWeight: FontWeight.w400)),
-                            // Add more fields from DailyChallenge as needed
-                            const SizedBox(
-                                height:
-                                    8), // Add some space between text and image
-                            if (challenges[index].picture != null)
-                              Image.network(
-                                challenges[index].picture!,
-                                width: double
-                                    .infinity, // Make the image fill the width of the ListTile
-                                fit: BoxFit
-                                    .cover, // Adjust the image to cover the space
+                              '${challenge.description}',
+                              style: GoogleFonts.montserrat(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
                               ),
-                            Divider()
+                            ),
+                            if (challenge.picture != null)
+                              Image.network(
+                                challenge.picture!,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                           ],
                         ),
                       ),
-                    ),
-                    // Add onTap handler if needed
+                      Divider(),
+                    ],
                   );
                 },
               );
@@ -84,5 +96,39 @@ class _ForumState extends State<Forum> {
         ),
       ),
     );
+  }
+
+  Future<List<DailyChallenge>> getSortedChallenges() async {
+    try {
+      var challengeMap = await getFromFireStore();
+      List<DailyChallenge> sortedChallenges = [];
+
+      // Flatten the map values into a single list
+      challengeMap.values.forEach((challenges) {
+        sortedChallenges.addAll(challenges);
+      });
+
+      // Sort the list of challenges by challenge date in descending order
+      sortedChallenges.sort((a, b) => b.challengeDate.compareTo(a.challengeDate));
+
+      return sortedChallenges;
+    } catch (e) {
+      print('Error fetching and sorting challenges: $e');
+      return [];
+    }
+  }
+
+  Future<String> getUserName(String userId) async {
+    try {
+      var userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      return userDoc['name'];
+    } catch (e) {
+      print('Error fetching user name: $e');
+      return '';
+    }
   }
 }

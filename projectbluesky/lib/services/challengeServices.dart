@@ -50,7 +50,7 @@ Future<Map<String, List<DailyChallenge>>> getFromFireStore() async {
         challengeMap[userName] = [challenge];
       }
     }
-
+print(challengeMap);
     return challengeMap;
   } catch (e) {
     print('Error fetching challenges: $e');

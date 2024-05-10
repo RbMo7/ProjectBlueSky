@@ -139,6 +139,7 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                           ),
+
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 15.0),
@@ -151,18 +152,54 @@ class _HomeState extends State<Home> {
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(15.0),
-                                  child: Text(
-                                    _levelofAirQuality(aqi[0].round()),
-                                    style: GoogleFonts.montserrat(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _levelofAirQuality(aqi[0].round()),
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.blue)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.masks),
+                                      Text(
+                                        _returnAdvices(aqi[0].round()),
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
                           const SizedBox(height: 20),
                           Divider(),
                           const SizedBox(height: 10),
@@ -237,7 +274,8 @@ class _HomeState extends State<Home> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          color: Colors.amber),
+                                          border: Border.all(
+                                              color: Colors.amber, width: 3)),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 5.0),
@@ -246,8 +284,8 @@ class _HomeState extends State<Home> {
                                           child: Text(
                                               '${data[index]["city"]}, ${data[index]["county"]}, ${data[index]["state"]}',
                                               style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500)),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700)),
                                         ),
                                       ),
                                     ),
@@ -319,6 +357,29 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  String _returnAdvices(int aqi) {
+    String level;
+
+    if (aqi <= 50) {
+      level = "No need to wear a mask.";
+    } else if (aqi < 101) {
+      level = 'Wearing a mask is advised.';
+    } else if (aqi < 151) {
+      level = "Do wear a mask before going out.";
+    } else if (aqi < 200) {
+      level =
+          "Pollution level are high, older people and children are advised to go out with care";
+    } else if (aqi < 300) {
+      level =
+          "Every age group are adviced to take high caution and wear mask at all times";
+    } else if (aqi < 400) {
+      level = "Do not go out until extremely necessary";
+    } else {
+      level = "Take serious caution, do not go out at all.";
+    }
+    return level;
   }
 }
 

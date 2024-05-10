@@ -13,30 +13,23 @@ Future<void> addToFirestore(DailyChallenge challenge) async {
   }
 }
 
-Future<Map<String, DailyChallenge>> getFromFireStore() async {
+Future<Map<String, List<DailyChallenge>>> getFromFireStore() async {
   try {
-    // Get daily challenges
     var challengeQuerySnapshot =
         await FirebaseFirestore.instance.collection('daily_challenges').get();
 
-    // Map to store user names and daily challenges
-    Map<String, DailyChallenge> challengeMap = {};
+    Map<String, List<DailyChallenge>> challengeMap = {};
 
-    // Iterate through each challenge document
     for (var challengeDoc in challengeQuerySnapshot.docs) {
-      // Get user ID from the challenge document
       var userId = challengeDoc['userID'];
 
-      // Get user document from the users collection
       var userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
 
-      // Get user name from the user document
       var userName = userDoc['name'];
 
-      // Create DailyChallenge object
       var challenge = DailyChallenge(
         title: challengeDoc['title'],
         description: challengeDoc['description'],
@@ -45,14 +38,20 @@ Future<Map<String, DailyChallenge>> getFromFireStore() async {
         challengeDate: DateTime.parse(challengeDoc['challengeDate']),
       );
 
-      // Add entry to challenge map with user name as key and challenge object as value
-      challengeMap[userName] = challenge;
+      // Check if the user already has entries in the map
+      if (challengeMap.containsKey(userName)) {
+        // If the user already exists in the map, add the new challenge to the existing list
+        challengeMap[userName]!.add(challenge);
+      } else {
+        // If the user doesn't exist in the map, create a new list and add the challenge to it
+        challengeMap[userName] = [challenge];
+      }
     }
 
     return challengeMap;
   } catch (e) {
-    // Handle errors
     print('Error fetching challenges: $e');
-    return {}; // Return empty map in case of error
+    return {};
   }
 }
+

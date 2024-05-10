@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,6 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  
   runApp(MaterialApp(initialRoute: '/', routes: {
     '/': (context) => const MyApp(),
     '/home': (context) => const Home(),
@@ -43,56 +43,61 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  
-
   final List<Widget> _pages = [Challenges(), Home(), Forum()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(0, 152, 255, 0.6),
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, AsyncSnapshot<User?> snapshot) {
-         
           if (snapshot.hasData && snapshot.data != null) {
-            
             return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                "PROJECT BLUE SKY",
-                style: GoogleFonts.poppins(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600),
-              ),
-              centerTitle: true,
-              flexibleSpace: Container(
-                decoration: const BoxDecoration(
-                    gradient: RadialGradient(radius: 10, colors: [
-                  Colors.white,
-                  Color.fromRGBO(0, 156, 255, 1)
-                ])),
-              ),
-            ),
-            body: _pages[_selectedIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _selectedIndex,
-              onTap: _navigateBottomBar,
-              type: BottomNavigationBarType.fixed,
-              items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Iconsax.cloud), label: 'Challenges'),
-                BottomNavigationBarItem(
-                    icon: Icon(Iconsax.home), label: 'Home'),
-                BottomNavigationBarItem(
-                    icon: Icon(Iconsax.support), label: 'Forum')
-              ],
-            ));
+                appBar: AppBar(
+                  title: Text(
+                    "PROJECT BLUE SKY",
+                    style: GoogleFonts.poppins(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600),
+                  ),
+                  centerTitle: true,
+                  flexibleSpace: Container(
+                    decoration: const BoxDecoration(
+                        gradient: RadialGradient(radius: 10, colors: [
+                      Colors.white,
+                      Color.fromRGBO(0, 156, 255, 1)
+                    ])),
+                  ),
+                ),
+                body: _pages[_selectedIndex],
+                bottomNavigationBar: BottomNavigationBar(
+                  currentIndex: _selectedIndex,
+                  onTap: _navigateBottomBar,
+                  type: BottomNavigationBarType.fixed,
+                  items: const [
+                    BottomNavigationBarItem(
+                        icon: Icon(Iconsax.cloud), label: 'Challenges'),
+                    BottomNavigationBarItem(
+                        icon: Icon(Iconsax.home), label: 'Home'),
+                    BottomNavigationBarItem(
+                        icon: Icon(Iconsax.support), label: 'Forum')
+                  ],
+                )
+                // bottomNavigationBar: CurvedNavigationBar(
+                //   backgroundColor: Color.fromRGBO(0, 152, 255, 0.1),
+                //   color: Color.fromRGBO(0, 152, 255, 0.2),
+                //   items: [
+                //     Icon(Iconsax.cloud),
+                //     Icon(Iconsax.home),
+                //     Icon(Iconsax.support)
+                //   ],
+                // ),
+                );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          }
-          
-          else{
+          } else {
             return AuthGate();
           }
         },

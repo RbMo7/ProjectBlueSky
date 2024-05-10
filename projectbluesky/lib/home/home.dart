@@ -47,7 +47,6 @@ class _HomeState extends State<Home> {
       final fireJson = jsonDecode(fireBody);
       print(fireJson);
 
-
       // Extract AQI value from the JSON response structure (modify based on your API)
       final aqiValue = json['yhat'];
       setState(() {
@@ -67,11 +66,11 @@ class _HomeState extends State<Home> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-List<dynamic> data = (fireAqi.isNotEmpty ? fireAqi[0]['data'] as List<dynamic>: []);
-    
+    List<dynamic> data =
+        (fireAqi.isNotEmpty ? fireAqi[0]['data'] as List<dynamic> : []);
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -79,14 +78,17 @@ List<dynamic> data = (fireAqi.isNotEmpty ? fireAqi[0]['data'] as List<dynamic>: 
           children: [
             Text(
               'Air Quality Index',
-              style:
-                  GoogleFonts.montserrat(fontSize: 15, fontWeight: FontWeight.w600),
+              style: GoogleFonts.montserrat(
+                  fontSize: 15, fontWeight: FontWeight.w600),
             ),
             Row(
               children: [
                 const Icon(Iconsax.location),
-                Text('Pulchowk, Kathmandu',style:
-                      GoogleFonts.montserrat(fontSize: 15, fontWeight: FontWeight.w600),),
+                Text(
+                  'Pulchowk, Kathmandu',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 15, fontWeight: FontWeight.w600),
+                ),
               ],
             )
           ],
@@ -97,152 +99,167 @@ List<dynamic> data = (fireAqi.isNotEmpty ? fireAqi[0]['data'] as List<dynamic>: 
           child: isLoading
               ? Center(child: CircularProgressIndicator())
               : isLoaded
-              ? SizedBox(
-                height: 1000,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Display numeric value of air quality for today
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 15.0),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: _buildAirQualityWidget(aqi[0].round())),
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  aqi[0].round().toString(),
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 60,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Text(
-                                  "last updated on ${DateTime.now().toString()}",
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: _buildAirQualityWidget(aqi[0].round()),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text(
-                                _levelofAirQuality(aqi[0].round()),
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                  ? SizedBox(
+                      height: 1000,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Display numeric value of air quality for today
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(15.0, 0, 15.0, 15.0),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      _buildAirQualityWidget(aqi[0].round())),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      aqi[0].round().toString(),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 60,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      "last updated on ${DateTime.now().toString()}",
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Divider(),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Weekly Forecast',
-                        style: GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 10),
-                      // Display forecast for 7 days horizontally
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Row(
-                            children: List.generate(
-                              aqi.length,
-                              (index) => Column(
-                                children: [
-                                  Row(
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: _buildAirQualityWidget(aqi[0].round()),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Text(
+                                    _levelofAirQuality(aqi[0].round()),
+                                    style: GoogleFonts.montserrat(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Divider(),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Weekly Forecast',
+                            style: GoogleFonts.montserrat(
+                                fontSize: 20, fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 10),
+                          // Display forecast for 7 days horizontally
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Row(
+                                children: List.generate(
+                                  aqi.length,
+                                  (index) => Column(
                                     children: [
-                                      Text(
-                                        now.month.toString(),
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            now.month.toString(),
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          Text("/"),
+                                          Text((now.day + index).toString(),
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600)),
+                                        ],
                                       ),
-                                      Text("/"),
-                                      Text((now.day + index).toString(),
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w600)),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: _buildDailyForecastWidget(
+                                            aqi[index].round()),
+                                      ),
                                     ],
                                   ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 5),
-                                    child: _buildDailyForecastWidget(
-                                        aqi[index].round()),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Divider(),
-                      const SizedBox(height: 10),
-                      Text("Recent forest fires:" ,style: GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.w700),),
-                      Expanded(
-                        child: 
-                      SizedBox(
-                        height: 200,
-                        child: ListView.builder(
-                          
+                          const SizedBox(height: 20),
+                          Divider(),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Recent forest fires:",
+                            style: GoogleFonts.montserrat(
+                                fontSize: 20, fontWeight: FontWeight.w700),
+                          ),
+                          Expanded(
+                              child: SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: data.length,
                               itemBuilder: (context, index) {
                                 int count = 0;
-                                
+
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
                                     child: Container(
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.amber),
-                                    
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.amber),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                        
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5.0),
                                         child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('${data[index]["city"]}, ${data[index]["county"]}, ${data[index]["state"]}', style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500)),
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                              '${data[index]["city"]}, ${data[index]["county"]}, ${data[index]["state"]}',
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500)),
                                         ),
-                                      ),),
+                                      ),
+                                    ),
                                   ),
-                                  
                                 );
                               },
                             ),
-                      )
-                      )
-                    ],
-                  ),
-              )
-              : Container(),
+                          ))
+                        ],
+                      ),
+                    )
+                  : Container(),
         ),
       ),
     );
@@ -303,9 +320,6 @@ List<dynamic> data = (fireAqi.isNotEmpty ? fireAqi[0]['data'] as List<dynamic>: 
       ),
     );
   }
-
- 
-
 }
 
 void main() {

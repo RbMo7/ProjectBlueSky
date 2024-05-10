@@ -4,13 +4,14 @@ class DailyChallenge {
   final String description;
   final String picture;
   final DateTime challengeDate;
-
+  final int reward;
   DailyChallenge({
     required this.userID,
     required this.title,
     required this.description,
     required this.picture,
     required this.challengeDate,
+    required this.reward,
   });
 
   factory DailyChallenge.fromJson(Map<String, dynamic> json) {
@@ -19,7 +20,7 @@ class DailyChallenge {
       challengeDate: DateTime.parse(json['challengeDate']),
       description: json['description'],
       title: json['title'],
-      picture:json['picture'],
+      picture:json['picture'], reward: 0,
     );
   }
 
@@ -30,6 +31,7 @@ class DailyChallenge {
       'description': description,
       'title': title,
       'picture': picture,
+      'reward': reward,
     };
   }
 }

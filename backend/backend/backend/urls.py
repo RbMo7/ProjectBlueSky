@@ -25,4 +25,5 @@ urlpatterns = [
     path('fire/',fire_location),
     path('api-auth/', include('rest_framework.urls')),
     path('updateFire/',updateFire),
+    path('updateModel/',updateModel),
 ]

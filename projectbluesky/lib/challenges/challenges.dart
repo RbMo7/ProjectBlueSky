@@ -3,6 +3,7 @@ import 'package:projectbluesky/components/placeholder_challenges.dart';
 import 'package:projectbluesky/input/challengeinput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projectbluesky/userProfile/user_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Challenges extends StatefulWidget {
   const Challenges({Key? key});

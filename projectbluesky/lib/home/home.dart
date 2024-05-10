@@ -68,6 +68,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    const demoAqi = [50, 100, 150, 200, 250, 300, 350];
     List<dynamic> data =
         (fireAqi.isNotEmpty ? fireAqi[0]['data'] as List<dynamic> : []);
 
@@ -239,7 +240,8 @@ class _HomeState extends State<Home> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5),
                                         child: _buildDailyForecastWidget(
-                                            aqi[index].round()),
+                                            // aqi[index].round()),
+                                            demoAqi[index]),
                                       ),
                                     ],
                                   ),

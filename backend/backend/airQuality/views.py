@@ -88,10 +88,9 @@ def updateModel(request):
     data_Pulchowk.pm25 = pd.to_numeric(data_Pulchowk.pm25, errors='coerce')
     data_Pulchowk['pm25']=data_Pulchowk['pm25'].replace(to_replace=' ',value=np.nan)
     model = Prophet()
-
     train_data=pd.DataFrame()
     train_data['ds']=data_Pulchowk['date']
     train_data['y']=data_Pulchowk['pm25']
     model.fit(train_data)
-    joblib.dump(model,'model')
+    joblib.dump(model,'..\\model')
     return(HttpResponse('future'))

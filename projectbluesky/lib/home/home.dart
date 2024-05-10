@@ -281,11 +281,18 @@ class _HomeState extends State<Home> {
                                             vertical: 5.0),
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                              '${data[index]["city"]}, ${data[index]["county"]}, ${data[index]["state"]}',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w700)),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                  '${data[index]["city"]}, ${data[index]["county"]}, ${data[index]["state"]}',
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w700)),
+                                              Text('${data[index]["date"]}',style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600) )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

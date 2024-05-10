@@ -37,7 +37,7 @@ def getLocation():
     latitude=geo['latitude'].to_list()
     longitude=geo['longitude'].to_list()
     print(latitude,longitude)
-    date=geo['acq_date'].to_list
+    date=geo['acq_date'].to_list()
     return latitude,longitude,date
 
 def apiCreator():
@@ -52,15 +52,15 @@ def apiCreator():
 
 def jsonProcessor():
     apis = apiCreator()
+    latitude,longitude,date = getLocation()
     extracted_data = []
-    for api in apis:
+    for api,dat in zip(apis,date):
         response = requests.get(api)
         if response.status_code == 200:
             api_data=response.json()
             # api_data=json.loads(api_data)
             if 'features' in api_data:
                 features = api_data['features']
-                
                 for feature in features:
                     properties = feature.get('properties', {})
                     if properties.get('country_code', 'N/A') == 'np':
@@ -70,6 +70,7 @@ def jsonProcessor():
                             'state': properties.get('state', 'N/A'),
                             'county': properties.get('county', 'N/A'),
                             'city': properties.get('city', 'N/A'),
+                            'date': dat,
                         })
     return extracted_data
 

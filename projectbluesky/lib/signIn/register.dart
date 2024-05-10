@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:projectbluesky/signIn/auth_gate.dart';
 import 'package:projectbluesky/signIn/firebaseSignin.dart';
 
@@ -18,6 +19,23 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+                  title: Text(
+                    "PROJECT BLUE SKY",
+                    style: GoogleFonts.poppins(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600),
+                  ),
+                  centerTitle: true,
+                  flexibleSpace: Container(
+                    decoration: const BoxDecoration(
+                        gradient: RadialGradient(radius: 10, colors: [
+                      Colors.white,
+                      Color.fromRGBO(0, 156, 255, 1)
+                    ])),
+                  ),
+                ),
       body: SafeArea(
         child: Center(
           child: Padding(

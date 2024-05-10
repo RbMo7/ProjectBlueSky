@@ -125,6 +125,7 @@ class _ChallengeInputState extends State<ChallengeInput> {
                       picture: imageUrl,
                       userID: uid!,
                       challengeDate: DateTime.now(),
+                      reward: 0,
                     );
 
                     await addToFirestore(_challenge);

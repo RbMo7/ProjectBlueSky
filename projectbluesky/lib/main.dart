@@ -8,6 +8,7 @@ import 'package:projectbluesky/firebase_options.dart';
 import 'package:projectbluesky/forum/forum.dart';
 import 'package:projectbluesky/home/home.dart';
 import 'package:projectbluesky/signIn/auth_gate.dart';
+import 'package:projectbluesky/userProfile/user_profile.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,8 @@ Future main() async {
     '/home': (context) => const Home(),
     '/challenges': (context) => const Challenges(),
     '/forum': (context) => const Forum(),
-    '/signIn': (context) => AuthGate()
+    '/signIn': (context) => AuthGate(),
+    '/user_profile': (context) => UserProfilePage()
   }));
 }
 

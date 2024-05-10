@@ -28,7 +28,7 @@ def model_pred(request):
     return JsonResponse(simplified_json)
 
 def getLocation():
-    geo = pd.read_csv('D:\\Ecothon\\GitProject\\ProjectBlueSky\\backend\\MODIS_C6_1_South_Asia_24h.csv')
+    geo = pd.read_csv('..\\MODIS_C6_1_South_Asia_24h.csv')
     geo = geo.drop(geo[geo.latitude >= 30].index)
     geo = geo.drop(geo[geo.latitude <= 26].index)
     geo = geo.drop(geo[geo.longitude <= 80].index)

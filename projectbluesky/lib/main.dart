@@ -17,14 +17,17 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MaterialApp(initialRoute: '/', routes: {
-    '/': (context) => const MyApp(),
-    '/home': (context) => const Home(),
-    '/challenges': (context) => const Challenges(),
-    '/forum': (context) => const Forum(),
-    '/signIn': (context) => AuthGate(),
-    '/user_profile': (context) => UserProfilePage()
-  }));
+  runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MyApp(),
+        '/home': (context) => const Home(),
+        '/challenges': (context) => const Challenges(),
+        '/forum': (context) => const Forum(),
+        '/signIn': (context) => AuthGate(),
+        '/user_profile': (context) => UserProfilePage()
+      }));
 }
 
 class MyApp extends StatefulWidget {

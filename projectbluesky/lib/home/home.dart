@@ -240,8 +240,8 @@ class _HomeState extends State<Home> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5),
                                         child: _buildDailyForecastWidget(
-                                            // aqi[index].round()),
-                                            demoAqi[index]),
+                                            aqi[index].round()),
+                                        // demoAqi[index]),
                                       ),
                                     ],
                                   ),
@@ -289,10 +289,13 @@ class _HomeState extends State<Home> {
                                                   '${data[index]["city"]}, ${data[index]["county"]}, ${data[index]["state"]}',
                                                   style: GoogleFonts.poppins(
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.w700)),
-                                              Text('${data[index]["date"]}',style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w700)),
+                                              Text('${data[index]["date"]}',
+                                                  style: GoogleFonts.poppins(
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.w600) )
+                                                      fontWeight:
+                                                          FontWeight.w600))
                                             ],
                                           ),
                                         ),
